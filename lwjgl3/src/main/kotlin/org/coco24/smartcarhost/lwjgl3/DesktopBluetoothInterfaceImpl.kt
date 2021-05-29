@@ -5,7 +5,7 @@ import org.coco24.smartcarhost.BluetoothInterafce
 
 
 class DesktopBluetoothInterfaceImpl : BluetoothInterafce {
-    override fun sendData(device: BluetoothDevice, data: UByteArray) {
+    override fun sendData(device: BluetoothDevice, data: UByteArray, callback: (() -> Unit)?) {
 
     }
 

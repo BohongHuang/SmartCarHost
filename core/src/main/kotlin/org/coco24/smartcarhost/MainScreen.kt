@@ -48,14 +48,16 @@ class MainScreen(game: MainGame) : KtxScreen {
                     row()
                     actor(label)
 
+                    val screen = ControllerScreen(btDevice, game)
+
                     onClick {
                         sendCommand(CommandIdle)
                         sendCommand(CommandBleControl) {
-                            game.setScreen(ControllerScreen(btDevice, game))
+                            game.setScreen(screen)
                         }
                     }
                 }.cell(pad = 10f)
-                visTextButton(text = "Avoidance") {
+                visTextButton(text = "Obstacle Avoidance") {
                     clearChildren()
                     visImage(texture = assetManager.loadNow("res/graphics/avoidance.png"))
                     row()
@@ -65,10 +67,24 @@ class MainScreen(game: MainGame) : KtxScreen {
                         sendCommand(CommandAvoidance)
                     }
                 }.cell(pad = 10f)
+                visTextButton(text = "Line Tracking") {
+                    clearChildren()
+                    visImage(texture = assetManager.loadNow("res/graphics/track.png"))
+                    row()
+                    actor(label)
+
+                    onClick {
+                        val screen = LineTrackingSettingScreen(btDevice, game)
+                        sendCommand(CommandTracking) {
+                            game.setScreen(screen)
+                        }
+
+                    }
+                }.cell(pad = 10f)
             }
             visTextButton(text = "Stop") {
                 clearChildren()
-                visImage(texture = assetManager.loadNow("res/graphics/stop.png"))
+                visImage(texture = assetManager.loadNow("res/graphics/stop.png")).cell(maxWidth = 100f, maxHeight = 100f)
                 row()
                 actor(label)
                 pack()
@@ -94,8 +110,7 @@ class MainScreen(game: MainGame) : KtxScreen {
 
     fun sendCommand(cmd: UByte, callback: (() -> Unit)? = null) {
         if (bt.isConnected(btDevice)) {
-            bt.sendData(btDevice, ubyteArrayOf(cmd))
-            callback?.invoke()
+            bt.sendData(btDevice, ubyteArrayOf(cmd), callback)
         }
     }
 
